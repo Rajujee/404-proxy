@@ -1,9 +1,7 @@
 <IfModule mod_env.c>
-  SetEnv E404_PROXY_DEST "http://www.razzaumana.it"
+  SetEnv E404_PROXY_DEST "http://domain.com"
   SetEnv E404_PROXY_FILTER /\.jpg$/i
   SetEnv E404_PROXY_DOWNLOAD 1
 </IfModule>
 
-php_value display_errors 1
-
-ErrorDocument 404 /e404_proxy/e404_proxy.php
+ErrorDocument 404 /e404_proxy.php
