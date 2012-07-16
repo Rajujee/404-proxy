@@ -4,7 +4,7 @@ You downloaded the latest version of db from production, latest version of code 
 You would like to download missing files only when they are required. 
 
 ## Overview
-This scripts solves 404 errors caused by missing files in local version which are instead present on the application in production.
+This script solves 404 errors caused by missing files in local version which instead exist in production.
 
 ## Usage
 * Copy e404_proxy.php into the document root of your website.
