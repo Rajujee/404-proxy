@@ -5,15 +5,20 @@ function do_404() {
   die();
 }
 
+// Gets configuration parameter
+function cfg($key, $default = NULL) {
+  return isset($_SERVER[$key]) ? $_SERVER[$key] : $default;
+}
+
 // Dest is mandatory
-if (!$dest = $_SERVER['E404_PROXY_DEST']) {
+if (!$dest = cfg('E404_PROXY_DEST')) {
   print 'E404: no destination set';
   do_404();
 }
 
 // Test for filter, if provided
 $uri = $_SERVER['REQUEST_URI'];
-if (($filter = $_SERVER['E404_PROXY_FILTER']) && !preg_match($filter, $uri)) {
+if (($filter = cfg('E404_PROXY_FILTER')) && !preg_match($filter, $uri)) {
   print 'E404: filter does not match, ' . $filter;
   do_404();
 }
@@ -25,7 +30,7 @@ $uri = preg_replace('~^' . $dir . '~', '', $uri);
 $location = rtrim($dest, '/') . $uri;
 
 // Download to local, if asked
-if ($download = $_SERVER['E404_PROXY_DOWNLOAD']) {
+if ($download = cfg('E404_PROXY_DOWNLOAD')) {
   // TODO: add curl support
   $contents = file_get_contents($location);
 
