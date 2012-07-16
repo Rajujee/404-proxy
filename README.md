@@ -9,7 +9,7 @@ This script solves 404 errors caused by missing files in local version which ins
 ## Usage
 * Copy e404_proxy.php into the document root of your website.
 * Add required environment variables.
-* Set this script for handling 404 errors.
+* Set this script to handle 404 errors.
 
 For example, with .htaccess:
 <pre>
@@ -21,7 +21,7 @@ For example, with .htaccess:
  ErrorDocument 404 /e404_proxy.php
 </pre>
 
-By default, this scripts redirects to the real location in which file actually exists. Set E404_PROXY_DOWNLOAD to download remove resource and save a local copy of the file. Next time the file will be served natively from the webserver.
+By default, this scripts redirects to the real location in which file actually exists. Set E404_PROXY_DOWNLOAD to download remote resource and save a local copy of the file. Next time the file will be served natively from the webserver.
 
 ## TODO
 Test and provide documentation for nginx based application/websites.
