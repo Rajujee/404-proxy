@@ -20,22 +20,24 @@ function cfg($key, $default = NULL) {
 /**
  * Downloads remote file.
  * */
-function wget($location) {
-  if (extension_loaded('curl')) {
-    $ch = curl_init();
-
-    curl_setopt($ch, CURLOPT_HEADER, 0);
-    curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
-    curl_setopt($ch, CURLOPT_URL, $location);
-
-    $data = curl_exec($ch);
-    curl_close($ch);
-  }
-  else {
-    $data = file_get_contents($location);
+function http_request($location) {
+  if (!extension_loaded('curl')) {
+    do_404('CURL library must be installed to download files.');
   }
 
-  return $data;
+  $ch = curl_init();
+  curl_setopt($ch, CURLOPT_HEADER, 0);
+  curl_setopt($ch, CURLOPT_RETURNTRANSFER, 1);
+  curl_setopt($ch, CURLOPT_URL, $location);
+  $data = curl_exec($ch);
+  $code = curl_getinfo($ch, CURLINFO_HTTP_CODE);
+  curl_close($ch);
+
+  $result = array();
+  $result['data'] = $data;
+  $result['code'] = $code;
+
+  return $result;
 }
 
 // Destination is mandatory.
@@ -57,14 +59,12 @@ if ($path = cfg('E404_PROXY_PATH')) {
 
 $location = rtrim($dest, '/') . $uri;
 
-// Download to local, if asked.
+// Download locally, if asked.
 if ($download = cfg('E404_PROXY_DL')) {
-  // Manual download, instead of using native copy().
-  // because it's easier to deal with proxies.
-  $contents = wget($location);
+  $http_result = http_request($location);
 
-  if (!$contents) {
-    do_404('file is empty ' . $location);
+  if ($http_result['code'] != 200) {
+    do_404('got ' . $http_result['code'] . ' trying to download ' . $location);
   }
 
   $pwd = dirname(__FILE__);
@@ -82,7 +82,7 @@ if ($download = cfg('E404_PROXY_DL')) {
     }
   }
 
-  if (!file_put_contents($file, $contents)) {
+  if (!file_put_contents($file, $http_result['data'])) {
     do_404('unable to save file in ' . $file);
   }
 
